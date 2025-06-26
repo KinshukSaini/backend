@@ -48,7 +48,7 @@ class Chatbot:
             recent_history = conversation_history[-6:] if len(conversation_history) > 6 else conversation_history
             
             for msg in recent_history:
-                role = "User" if msg['role'] == 'user' else "Lexley"
+                role = "User" if msg['role'] == 'user' else "ZangerAI"
                 conversation_context += f"{role}: {msg['content']}\n"
             conversation_context += "\n"
 
