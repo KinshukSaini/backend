@@ -17,7 +17,7 @@ class Chatbot:
         is_simple_greeting = any(keyword in query.lower() for keyword in greeting_keywords) and len(query.split()) <= 3
         
         system_prompt = """
-        You are Lexeley, a helpful, friendly, and knowledgeable legal assistant specializing in UK law.
+        You are Lexley, a helpful, friendly, and knowledgeable legal assistant specializing in UK law.
         
         **IMPORTANT CONVERSATION RULES:**
         - Only greet the user with "Hello!" or similar if this is the very first message of the conversation
@@ -48,7 +48,7 @@ class Chatbot:
             recent_history = conversation_history[-6:] if len(conversation_history) > 6 else conversation_history
             
             for msg in recent_history:
-                role = "User" if msg['role'] == 'user' else "ZangerAI"
+                role = "User" if msg['role'] == 'user' else "Lexley"
                 conversation_context += f"{role}: {msg['content']}\n"
             conversation_context += "\n"
 
@@ -59,7 +59,7 @@ class Chatbot:
                 
                 Current user message: "{query}"
                 
-                This is the user's first message and it's a greeting. Welcome them warmly to ZangerAI 
+                This is the user's first message and it's a greeting. Welcome them warmly to Lexley 
                 and ask how you can help with their legal questions today.
                 """
             else:
