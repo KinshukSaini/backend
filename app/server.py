@@ -22,7 +22,7 @@ app = FastAPI(title="Zanger AI API")
 # Add CORS middleware to allow requests from frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://lexley.vercel.app", "http://localhost:3000", "http://localhost:5173"],
+    allow_origins=["https://lexley.vercel.app", "http://localhost:3000", "http://localhost:5173", "https://app.lexley.co.uk"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
