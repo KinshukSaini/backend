@@ -1,12 +1,11 @@
-import google.generativeai as genai
+from openai import OpenAI
 from typing import List, Dict, Any, Optional
 
 class Chatbot:
     def __init__(self, api_key: str, retriever):
         self.api_key = api_key
         self.retriever = retriever
-        genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        self.client = OpenAI(api_key=self.api_key)
 
     def generate_response_with_memory(self, query: str, context: list, conversation_history: List[Dict] = None):
         """Enhanced response with conversation memory"""
@@ -17,7 +16,7 @@ class Chatbot:
         is_simple_greeting = any(keyword in query.lower() for keyword in greeting_keywords) and len(query.split()) <= 3
         
         system_prompt = """
-        You are Lexeley, a helpful, friendly, and knowledgeable legal assistant specializing in UK law.
+        You are Lexley, a helpful, friendly, and knowledgeable legal assistant specializing in UK law.
         
         **IMPORTANT CONVERSATION RULES:**
         - Only greet the user with "Hello!" or similar if this is the very first message of the conversation
@@ -59,7 +58,7 @@ class Chatbot:
                 
                 Current user message: "{query}"
                 
-                This is the user's first message and it's a greeting. Welcome them warmly to ZangerAI 
+                This is the user's first message and it's a greeting. Welcome them warmly to Lexley 
                 and ask how you can help with their legal questions today.
                 """
             else:
@@ -72,7 +71,7 @@ class Chatbot:
                 This is a casual greeting in an ongoing conversation. Respond naturally and 
                 ask what you can help with next, referencing our previous discussion if appropriate.
                 """
-            return self.call_gemini_api(simple_prompt)
+            return self.call_openai_api(simple_prompt)
 
 
         formatted_context = ""
@@ -102,15 +101,22 @@ class Chatbot:
         {'Include specific source citations when using the legal context above.' if formatted_context else 'Provide helpful guidance based on your legal knowledge.'}
         """
 
-        return self.call_gemini_api(user_prompt)
+        return self.call_openai_api(user_prompt)
 
-    def call_gemini_api(self, prompt: str) -> str:
-        """Call Gemini API"""
+    def call_openai_api(self, prompt: str) -> str:
+        """Call OpenAI API using GPT-4"""
         try:
-            response = self.model.generate_content(prompt)
-            return response.text
+            response = self.client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=2000,
+                temperature=0.7
+            )
+            return response.choices[0].message.content
         except Exception as e:
-            print(f"Error calling Gemini API: {e}")
+            print(f"Error calling OpenAI API: {e}")
             return "I apologize, but I'm experiencing technical difficulties. Please try again."
 
     # Keep backward compatibility

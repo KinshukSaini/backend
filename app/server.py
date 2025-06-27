@@ -2,16 +2,14 @@ import os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-
-# Use relative imports since we're in the app package
 from .services.chatbot import Chatbot
 from .services.retriever import Retriever
 from .services.session_manager import SessionManager
 from .routes.chat import router
 
-# Load environment variables and initialize chatbot
+# Load environment
 load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
+api_key = os.getenv("OPENAI_API_KEY")
 retriever = Retriever()
 chatbot = Chatbot(api_key=api_key, retriever=retriever)
 session_manager = SessionManager()  # Add this line
@@ -22,11 +20,7 @@ app = FastAPI(title="Zanger AI API")
 # Add CORS middleware to allow requests from frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://lexley.vercel.app/chat",
-        "http://localhost:3000",
-        "http://localhost:5173"
-    ],  
+    allow_origins=["https://lexley.vercel.app", "http://localhost:3000", "http://localhost:5173", "https://app.lexley.co.uk"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,8 +33,7 @@ async def startup_event():
     app.state.session_manager = session_manager  # Add this line
 
 # Include the chat router WITH /api prefix
-app.include_router(router, prefix="/api")  # ✅ Added prefix="/api"
-
+app.include_router(router, prefix="/api")  
 @app.get("/")
 async def root():
     return {"message": "ZangerAI Legal Assistant API"}

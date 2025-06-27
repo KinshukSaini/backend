@@ -18,7 +18,7 @@ class ChatResponse(BaseModel):
     session_id: str
     message_id: str
 
-# Simple auth dependency - adapt to your Supabase setup
+# Simple auth dependency
 async def get_current_user_id(request: Request) -> str:
     return "test_user_123"
 
@@ -77,7 +77,7 @@ async def get_user_sessions(
 ):
     """Get all sessions for user"""
     try:
-        session_manager = request.app.state.session_manager  # ✅ Use app state
+        session_manager = request.app.state.session_manager
         sessions = await session_manager.get_user_sessions(user_id)
         
         return {"sessions": [
